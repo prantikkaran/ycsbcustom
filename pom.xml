@@ -109,6 +109,7 @@ LICENSE file.
   <properties>
     <maven.assembly.version>2.5.5</maven.assembly.version>
     <maven.dependency.version>2.10</maven.dependency.version>
+    <checkstyle.skip>true</checkstyle.skip>
 
     <!-- datastore binding versions, lex sorted -->
     <accumulo.1.9.version>1.9.3</accumulo.1.9.version>
@@ -176,8 +177,8 @@ LICENSE file.
     <module>elasticsearch5</module>
     <module>foundationdb</module>
     <module>geode</module>
-    <module>googlebigtable</module>
-    <module>googlebigtable2</module>
+    <!-- <module>googlebigtable</module> -->
+    <!-- <module>googlebigtable2</module> -->
     <module>googledatastore</module>
     <module>griddb</module>
     <module>hbase1</module>

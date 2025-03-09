@@ -46,6 +46,8 @@ import site.ycsb.Status;
 import org.bson.Document;
 import org.bson.types.Binary;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -251,54 +253,33 @@ public class MongoDbClient extends DB {
    *         class's description for a discussion of error codes.
    */
   @Override
-  public Status insert(String table, String key,
-      Map<String, ByteIterator> values) {
+public Status insert(String table, String key, Map<String, ByteIterator> values) {
     try {
-      MongoCollection<Document> collection = database.getCollection(table);
-      Document toInsert = new Document("_id", key);
-      for (Map.Entry<String, ByteIterator> entry : values.entrySet()) {
-        toInsert.put(entry.getKey(), entry.getValue().toArray());
-      }
+        MongoCollection<Document> collection = database.getCollection(table);
 
-      if (batchSize == 1) {
-        if (useUpsert) {
-          // this is effectively an insert, but using an upsert instead due
-          // to current inability of the framework to clean up after itself
-          // between test runs.
-          collection.replaceOne(new Document("_id", toInsert.get("_id")),
-              toInsert, UPDATE_WITH_UPSERT);
-        } else {
-          collection.insertOne(toInsert);
+        // Read JSON from file
+        BufferedReader reader = new BufferedReader(new FileReader("mydata.json"));
+        StringBuilder jsonBuilder = new StringBuilder();
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            jsonBuilder.append(line);
         }
-      } else {
-        bulkInserts.add(toInsert);
-        if (bulkInserts.size() == batchSize) {
-          if (useUpsert) {
-            List<UpdateOneModel<Document>> updates = 
-                new ArrayList<UpdateOneModel<Document>>(bulkInserts.size());
-            for (Document doc : bulkInserts) {
-              updates.add(new UpdateOneModel<Document>(
-                  new Document("_id", doc.get("_id")),
-                  doc, UPDATE_WITH_UPSERT));
-            }
-            collection.bulkWrite(updates);
-          } else {
-            collection.insertMany(bulkInserts, INSERT_UNORDERED);
-          }
-          bulkInserts.clear();
-        } else {
-          return Status.BATCHED_OK;
-        }
-      }
-      return Status.OK;
+        reader.close();
+
+        // Parse JSON
+        String jsonData = jsonBuilder.toString();
+        Document doc = Document.parse(jsonData);
+
+        // Insert into MongoDB
+        collection.insertOne(doc);
+
+        return Status.OK;
     } catch (Exception e) {
-      System.err.println("Exception while trying bulk insert with "
-          + bulkInserts.size());
-      e.printStackTrace();
-      return Status.ERROR;
+        e.printStackTrace();
+        return Status.ERROR;
     }
-
-  }
+}
 
   /**
    * Read a record from the database. Each field/value pair from the result will
