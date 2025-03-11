@@ -253,33 +253,27 @@ public class MongoDbClient extends DB {
    *         class's description for a discussion of error codes.
    */
   @Override
-public Status insert(String table, String key, Map<String, ByteIterator> values) {
+  public Status insert(String table, String key, Map<String, ByteIterator> values){
     try {
+      Document doc = new Document("_id", key)  // Custom ID pattern
+
+      // Custom JSON structure
+      .append("name", "Johnnie Doe")
+      .append("age", 30)
+      .append("email", "john@example.com")
+      .append("address", "1234 Elm Street, Springfield")
+      .append("phone", "123-456-7890");
+
         MongoCollection<Document> collection = database.getCollection(table);
-
-        // Read JSON from file
-        BufferedReader reader = new BufferedReader(new FileReader("mydata.json"));
-        StringBuilder jsonBuilder = new StringBuilder();
-        String line;
-
-        while ((line = reader.readLine()) != null) {
-            jsonBuilder.append(line);
-        }
-        reader.close();
-
-        // Parse JSON
-        String jsonData = jsonBuilder.toString();
-        Document doc = Document.parse(jsonData);
-
-        // Insert into MongoDB
         collection.insertOne(doc);
 
         return Status.OK;
     } catch (Exception e) {
-        e.printStackTrace();
+        System.err.println("Error inserting document: " + e.getMessage());
         return Status.ERROR;
     }
 }
+
 
   /**
    * Read a record from the database. Each field/value pair from the result will

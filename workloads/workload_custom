@@ -1,8 +1,8 @@
 recordcount=1000
-operationcount=1000
-readproportion=0.5
-updateproportion=0.3
-insertproportion=0.2
-requestdistribution=zipfian
-fieldcount=5
-fieldlength=100
+operationcount=500
+workload=site.ycsb.workloads.CoreWorkload
+readproportion=0.3
+updateproportion=0.0
+scanproportion=0
+insertproportion=0.7
+requestdistribution=uniform
