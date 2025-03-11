@@ -49,6 +49,8 @@ mvn install:install-file \
   -Dpackaging=pom \
   -Dfile=pathToFile/org.restlet.parent-2.3.0.pom
 
+Then build your maven project - 
+mvn clean install -DskipTests
 
 After this you're good to go : 
 
