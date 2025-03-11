@@ -1,4 +1,4 @@
-This YCSB module pushes custom json to MongoDB in below format -> 
+This YCSB module pushes custom json to MongoDB in below format ->                                                                                                                   
     {
   "_id": "user6284781860667377211",
   "name": "Johnnie Doe",
@@ -19,6 +19,8 @@ org.restlet-2.3.0.jar
 org.restlet.ext.servlet-2.3.0.jar
 org.restlet.ext.servlet-2.3.0.pom
 org.restlet.parent-2.3.0.pom
+
+Refer to --> https://github.com/prantikkaran/mongojardependencies
 
 mvn install:install-file -DgroupId=org.restlet.jee \
     -DartifactId=org.restlet \
